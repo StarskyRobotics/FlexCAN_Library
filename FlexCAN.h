@@ -102,7 +102,6 @@ class FlexCAN
 private:
     uint32_t flexcanBase;
     struct CAN_filter_t MBFilters[NUM_MAILBOXES];
-    static struct CAN_filter_t defaultMask;
     void mailbox_int_handler (uint8_t mb, uint32_t ul_status);
     CANListener *listener[SIZE_LISTENERS];
 
@@ -153,6 +152,8 @@ protected:
     uint16_t sizeTxBuffer;
 
 public:
+    static struct CAN_filter_t defaultMask;
+
     FlexCAN (uint8_t id = 0);
     
     // Before begin, you can define rx buffer size. Default is SIZE_RX_BUFFER. This does not have effect after begin.
@@ -171,7 +172,7 @@ public:
     inline uint8_t getNumMailBoxes() { return NUM_MAILBOXES; }
     inline uint8_t getNumRxBoxes() { return getNumMailBoxes()-numTxMailboxes; }
     
-    void begin (uint32_t baud = 250000, const CAN_filter_t &mask = defaultMask, uint8_t txAlt = 0, uint8_t rxAlt = 0);
+    void begin (uint32_t baud = 250000, const CAN_filter_t &mask = defaultMask, uint8_t txAlt = 0, uint8_t rxAlt = 0, bool receive_own = false);
 
     void setFilter (const CAN_filter_t &filter, uint8_t n);
     bool getFilter (CAN_filter_t &filter, uint8_t n);

@@ -172,7 +172,7 @@ void FlexCAN::end (void)
  *
  */
 
-void FlexCAN::begin (uint32_t baud, const CAN_filter_t &mask, uint8_t txAlt, uint8_t rxAlt)
+void FlexCAN::begin (uint32_t baud, const CAN_filter_t &mask, uint8_t txAlt, uint8_t rxAlt, bool receive_own)
 {
     initializeBuffers();
     
@@ -210,9 +210,12 @@ void FlexCAN::begin (uint32_t baud, const CAN_filter_t &mask, uint8_t txAlt, uin
 
     waitFrozen();
 
-    // disable self-reception
+    // enable or disable self-reception
 
-    FLEXCANb_MCR (flexcanBase) |= FLEXCAN_MCR_SRX_DIS;
+    if (receive_own)
+        FLEXCANb_MCR (flexcanBase) &= ~FLEXCAN_MCR_SRX_DIS;
+    else
+        FLEXCANb_MCR (flexcanBase) |= FLEXCAN_MCR_SRX_DIS;
 
     setBaudRate(baud);
 
